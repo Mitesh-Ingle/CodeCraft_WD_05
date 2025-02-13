@@ -1,66 +1,98 @@
-const apikey = "27a8304287e889942b3391e4c1fd290f";
-const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+const apiKey = "27a8304287e889942b3391e4c1fd290f";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 
-const searchBox = document.querySelector(".search input");
-const searchBtn = document.querySelector(".search button");
-const weatherIcon = document.querySelector(".weather-icon");
-const weatherDiv = document.querySelector(".Weather");
-const errorDiv = document.querySelector(".error");
-
-async function checkWeather(city) {
-    if (!city) {
-        errorDiv.style.display = "block";
-        errorDiv.textContent = "Please enter a city name.";
-        weatherDiv.style.display = "none";
-        return;
-    }
+async function fetchWeather() {
+    const city = document.getElementById("cityInput").value.trim();
+    if (!city) return;
 
     try {
-        const response = await fetch(`${apiUrl}${city}&appid=${apikey}`);
-
+        const response = await fetch(`${apiUrl}&q=${encodeURIComponent(city)}&appid=${apiKey}`);
+        
         if (!response.ok) {
-            throw new Error("Invalid City Name");
+            throw new Error('City not found');
         }
 
         const data = await response.json();
-
-        document.querySelector(".city").textContent = data.name;
-        document.querySelector(".temp").textContent = Math.round(data.main.temp) + "°C";
-        document.querySelector(".humidity").textContent = data.main.humidity + "%";
-        document.querySelector(".wind").textContent = data.wind.speed + " km/h";
-
-        const weatherCondition = data.weather[0].main.toLowerCase();
-        const iconMap = {
-            clouds: "",
-            clear: "http://localhost:8000/images/clear.png",
-            rain: "http://localhost:8000/images/rain.png",
-            drizzle: "http://localhost:8000/images/drizzle.png",
-            mist: "http://localhost:8000/images/mist.png"
-        };
-        
-        // Assigning the image src directly
-        weatherIcon.src = iconMap[weatherCondition] || "file:///C:/Users/YourUsername/Desktop/WeatherApp/images/default.png";
-        
-        weatherIcon.style.display = "block";
-
-        weatherDiv.style.display = "block";
-        errorDiv.style.display = "none";
-
+        displayWeather(data);
     } catch (error) {
-        errorDiv.style.display = "block";
-        errorDiv.textContent = error.message;
-        weatherDiv.style.display = "none";
+        document.querySelector(".error").style.display = "block";
+        document.querySelector(".Weather").style.display = "none";
+        console.error('Error:', error);
     }
 }
 
-// Event Listeners for button click and "Enter" key
-searchBtn.addEventListener("click", () => checkWeather(searchBox.value.trim()));
-searchBox.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") checkWeather(searchBox.value.trim());
+function displayWeather(data) {
+    document.querySelector(".city").textContent = data.name;
+    document.querySelector(".temp").textContent = `${Math.round(data.main.temp)}°C`;
+    document.querySelector(".humidity").textContent = `${data.main.humidity}%`;
+    document.querySelector(".wind").textContent = `${data.wind.speed} km/h`;
+
+    const weatherIcon = document.querySelector(".weather-icon");
+    const temp = data.main.temp;  // Get temperature
+
+    let iconPath = "assets/icon/default.png";  // Default icon
+
+    // Set different icons based on temperature
+    if (temp <= 0) {
+        iconPath = "assest/icon/cold.png"; // Cold
+    } else if (temp > 0 && temp <= 15) {
+        iconPath = "assets/icon/chilly.png"; // Chilly weather
+    } else if (temp > 15 && temp <= 25) {
+        iconPath = "assets/icon/clouds.png"; // Mild temperature
+    } else if (temp > 25 && temp <= 35) {
+        iconPath = "assets/icon/clear.png"; // Warm weather
+    } else {
+        iconPath = "assets/icon/hot.png"; // Hot weather
+    }
+
+    // Ensure image loads properly
+    weatherIcon.src = iconPath;
+    weatherIcon.onerror = function() {
+        console.error(`Image not found: ${iconPath}`);
+        weatherIcon.src = "assets/icon/default.png"; // Fallback
+    };
+
+    document.querySelector(".weather").style.display = "block";
+    document.querySelector(".error").style.display = "none";
+}
+
+
+// Add event listener for Enter key
+document.getElementById("cityInput").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        fetchWeather();
+    }
 });
 
-// Hide weather and error messages initially
-document.addEventListener("DOMContentLoaded", () => {
-    weatherDiv.style.display = "none";
-    errorDiv.style.display = "none";
-});
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                try {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Correct API URL construction
+                    const response = await fetch(
+                        `${apiUrl}&lat=${lat}&lon=${lon}&appid=${apiKey}`
+                    );
+                    
+                    if (!response.ok) throw new Error('Weather data not found');
+                    
+                    const data = await response.json();
+                    displayWeather(data);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to fetch weather for your location');
+                }
+            },
+            (error) => {
+                // Enhanced error handling
+                console.error('Geolocation Error:', error);
+                alert(`Location access denied. Error: ${error.message}`);
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
