@@ -1,0 +1,136 @@
+/* General body styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container with gradient border */
+.container {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    color: white;
+    animation: fadeIn 1s ease-in-out;
+    position: relative;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-image-source: linear-gradient(45deg, #ff8c00, #ff4e50);
+}
+
+/* Weather App Title */
+.weather-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Image Container */
+.image-container {
+    width: 100%;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 3px solid white;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Input and Button Container */
+.input-container {
+    margin-top: 15px;
+}
+
+/* Input Field */
+input {
+    width: 85%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    text-align: center;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+input::placeholder {
+    color: #e1e1e1;
+}
+
+input:focus {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Buttons */
+button {
+    padding: 12px 18px;
+    margin: 5px;
+    border: none;
+    background: linear-gradient(to right, #ff8c00, #ff4e50);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(255, 140, 0, 0.3);
+}
+
+button:hover {
+    background: linear-gradient(to right, #ff4e50, #ff8c00);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.5);
+}
+
+/* Weather Result Display */
+#weatherResult {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block;
+    color: white;
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Smooth Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
