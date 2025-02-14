@@ -28,30 +28,47 @@ function displayWeather(data) {
     document.querySelector(".wind").textContent = `${data.wind.speed} km/h`;
 
     const weatherIcon = document.querySelector(".weather-icon");
-    let iconPath = "assets/icon/clear.png"; // Default icon
+    let iconPath = "/assets/icon/default.png"; // Default icon
 
     if (data.weather[0].main === "Clouds") {
         iconPath = "assets/icon/cloudy.png";
+
     } else if (data.weather[0].main === "Clear") {
         iconPath = "assets/icon/clear.png";
+
     } else if (data.weather[0].main === "Rain") {
         iconPath = "assets/icon/rainy-day.png";
+
     } else if (data.weather[0].main === "Drizzle") {
         iconPath = "assets/icon/drizzle.png";
+
     } else if (data.weather[0].main === "Mist") {
         iconPath = "assets/icon/mist.png";
+
+    } else if (data.weather[0].main === "Cold") {
+        iconPath = "assets/icon/cold.png";
+
+    } else if (data.weather[0].main === "Freezing") {
+        iconPath = "assets/icon/freezing.png";
+
+    } else if (data.weather[0].main === "Hot") {
+        iconPath = "assets/icon/hot.png";
     }
 
     weatherIcon.src = iconPath;
-
     weatherIcon.onerror = function () {
         console.error(`Image not found: ${this.src}`);
-        this.src = "assets/icon/.png"; // Fallback
+        weatherIcon.src = "/assets/icon/default.png";  // Add './' if it's in the project root
+        this.onerror = null; // Prevent infinite loop
     };
 
     document.querySelector(".weather").style.display = "block";
     document.querySelector(".error").style.display = "none";
 }
+
+console.log("Weather:", data.weather[0].main);
+console.log("Icon Path:", iconPath);
+
 
 // Add event listener for Enter key
 document.addEventListener("DOMContentLoaded", () => {
